@@ -170,3 +170,4 @@ AZ_NODISCARD az_result az_iot_hub_client_sas_get_password(
 
   return AZ_OK;
 }
+

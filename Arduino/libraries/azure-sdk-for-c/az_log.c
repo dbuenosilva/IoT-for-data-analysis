@@ -76,3 +76,4 @@ void _az_log_write(az_log_classification classification, az_span message)
 }
 
 #endif // AZ_NO_LOGGING
+

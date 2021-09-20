@@ -21,3 +21,4 @@ void _az_http_policy_logging_log_http_response(
 #include <_az_cfg_suffix.h>
 
 #endif // _az_HTTP_POLICY_LOGGING_PRIVATE_H
+

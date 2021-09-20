@@ -51,3 +51,4 @@
 #include <_az_cfg_suffix.h>
 
 #endif // _az_RESULT_INTERNAL_H
+

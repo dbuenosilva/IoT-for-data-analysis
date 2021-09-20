@@ -155,3 +155,4 @@ AZ_NODISCARD az_result az_iot_provisioning_client_sas_get_password(
 
   return AZ_OK;
 }
+

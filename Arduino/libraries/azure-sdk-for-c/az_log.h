@@ -125,3 +125,4 @@ AZ_INLINE void az_log_set_classification_filter_callback(
 #include <_az_cfg_suffix.h>
 
 #endif // _az_LOG_H
+

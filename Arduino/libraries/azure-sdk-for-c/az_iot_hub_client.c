@@ -173,3 +173,4 @@ AZ_NODISCARD az_result az_iot_hub_client_get_client_id(
 
   return AZ_OK;
 }
+

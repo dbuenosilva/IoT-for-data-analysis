@@ -1019,3 +1019,4 @@ AZ_NODISCARD az_result az_json_writer_append_end_array(az_json_writer* ref_json_
 {
   return az_json_writer_append_container_end(ref_json_writer, ']', AZ_JSON_TOKEN_END_ARRAY);
 }
+

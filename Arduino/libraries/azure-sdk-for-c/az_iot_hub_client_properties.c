@@ -489,3 +489,4 @@ AZ_NODISCARD az_result az_iot_hub_client_properties_get_next_component_property(
 
   return AZ_OK;
 }
+

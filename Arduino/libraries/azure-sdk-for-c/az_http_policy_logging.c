@@ -265,3 +265,4 @@ AZ_NODISCARD az_result az_http_pipeline_policy_logging(
   return result;
 }
 #endif // AZ_NO_LOGGING
+

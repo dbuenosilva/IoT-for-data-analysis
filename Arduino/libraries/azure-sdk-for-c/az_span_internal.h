@@ -98,3 +98,4 @@ az_span _az_span_token(
 #include <_az_cfg_suffix.h>
 
 #endif // _az_SPAN_INTERNAL_H
+

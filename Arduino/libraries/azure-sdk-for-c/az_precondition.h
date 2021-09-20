@@ -62,3 +62,4 @@ void az_precondition_failed_set_callback(az_precondition_failed_fn az_preconditi
 #include <_az_cfg_suffix.h>
 
 #endif // _az_PRECONDITION_H
+

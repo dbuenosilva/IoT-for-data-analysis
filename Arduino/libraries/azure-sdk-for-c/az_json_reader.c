@@ -982,3 +982,4 @@ AZ_NODISCARD az_result az_json_reader_skip_children(az_json_reader* ref_json_rea
   }
   return AZ_OK;
 }
+

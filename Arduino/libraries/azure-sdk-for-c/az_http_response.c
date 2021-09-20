@@ -345,3 +345,4 @@ AZ_NODISCARD az_result az_http_response_append(az_http_response* ref_response, a
 
   return AZ_OK;
 }
+
