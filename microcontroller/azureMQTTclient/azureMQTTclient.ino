@@ -1,13 +1,43 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// SPDX-License-Identifier: MIT
-
-//https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos
-//https://github.com/Azure/azure-sdk-for-c
-//https://github.com/Azure/azure-iot-arduino-protocol-mqtt
-
-// IoT commands in Azure iot cli
-//https://docs.microsoft.com/en-au/cli/azure/iot?view=azure-cli-latest
-
+/*##########################################################################
+# Project: PROG6002 - Programming Internet of Things - Assigment 2
+# File: azureMQTTclient.ino
+# Author: Diego Bueno - d.bueno.da.silva.10@student.scu.edu.au 
+# Date: 18/09/2021
+# Description: Arduino MQTT client to connect the device to Azure IoT Platform
+#
+# Credits:
+#                   Adapted from Microsoft Azure SDK for C library - ESP8266 example
+#                   https://github.com/Azure/azure-sdk-for-c/tree/main/sdk/samples/iot/aziot_esp8266
+#                   Copyright (c) Microsoft Corporation. All rights reserved.
+#                   SPDX-License-Identifier: MIT
+#                   opencode@microsoft.com
+#
+# References:
+#
+# Jaycar manuals     https://www.jaycar.com.au/medias/sys_master/images/images/9566822498334/XC3802-manualMain.pdf
+#                    https://www.jaycar.com.au/medias/sys_master/images/images/9566880923678/XC4411-manualMain.pdf
+#                   
+# DHT11 sensor lib   https://github.com/winlinvip/SimpleDHT 
+#
+# Azure IoT hub lib  https://www.arduino.cc/reference/en/libraries/azureiothub/
+#                    https://github.com/Azure/azure-iot-arduino
+# Azure MQTT client  https://github.com/Azure/azure-iot-arduino-protocol-mqtt
+# Azure IoT Utility  https://github.com/Azure/azure-iot-arduino-utility
+# Azure Iot Wi-Fi    https://github.com/Azure/azure-iot-arduino-socket-esp32-wifi
+# Azure IoT cli      https://docs.microsoft.com/en-au/cli/azure/iot?view=azure-cli-latest
+# Azure SDK for C    https://github.com/Azure/azure-sdk-for-c
+#
+# Arduino MQTT API   https://pubsubclient.knolleary.net/api
+#
+# Json lib           https://arduinojson.org/?utm_source=meta&utm_medium=library.properties
+#
+##########################################################################>
+# Changelog                            
+# Author:                          
+# Date:                                                        
+# Description:     
+#
+##########################################################################>*/
 
 #include <string.h>
 #include <stdbool.h>
@@ -36,6 +66,7 @@
 #define ONE_HOUR_IN_SECS 3600
 #define NTP_SERVERS "pool.ntp.org", "time.nist.gov"
 #define MQTT_PACKET_SIZE 1024
+#define TELEMETRY_FREQUENCY_MILLISECS 3000
 
 static const char* ssid = IOT_CONFIG_WIFI_SSID;
 static const char* password = IOT_CONFIG_WIFI_PASSWORD;
@@ -54,8 +85,14 @@ static unsigned char encrypted_signature[32];
 static char base64_decoded_device_key[32];
 static unsigned long next_telemetry_send_time_ms = 0;
 static char telemetry_topic[128];
-static uint8_t telemetry_payload[100];
+static uint8_t telemetry_payload[200];
 static uint32_t telemetry_send_count = 0;
+
+// Variables used to receive data from Arduino/Sensor
+const byte numChars = 32;
+char receivedChars[numChars];   // an array to store the received data
+char typeOfData = ' ';
+boolean newData = false;
 
 static void connectToWiFi()
 {
@@ -280,17 +317,67 @@ void setup()
   establishConnection();
 }
 
+void getDataFromSensor() {
+    static byte ndx = 0;
+    char endMarker = '\n';
+    char rc;
+    
+    while (Serial.available() > 0 && newData == false) {
+        rc = Serial.read();
+
+        if (rc != endMarker) {
+
+            if (ndx == 0) {
+              typeOfData = rc;
+            }
+            else {
+              receivedChars[ndx] = rc;
+            }
+            ndx++;
+            if (ndx >= numChars) {
+                ndx = numChars - 1;
+            }
+        }
+        else {
+            receivedChars[ndx] = '\0'; // terminate the string
+            ndx = 0;
+            newData = true;
+            typeOfData = ' ';
+        }
+    }
+}
+
 static char* getTelemetryPayload()
 {
+  int temperature = 0;
+  int humidity    = 0;
+  char *eptr;
+
+  getDataFromSensor();
+  if (newData == true) {
+    Serial.print("Received data from sensor");
+    Serial.println(receivedChars);
+    newData = false;
+  }  
+
+  // Splitting the string into temperature and humidity values
+  if (typeOfData == 'C') { // Temperature in Celsius
+    temperature = strtol(receivedChars, &eptr, 10);
+  }
+  if (typeOfData == 'H') { // Humidity
+    humidity = strtol(receivedChars, &eptr, 10);
+  }
+
   az_span temp_span = az_span_create(telemetry_payload, sizeof(telemetry_payload));
-  temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR("{ \"deviceId\": \"" IOT_CONFIG_DEVICE_ID "\", \"msgCount\": "));
+  temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR("{ \"deviceId\": \"" IOT_CONFIG_DEVICE_ID "\", \"temperature\": "));
+  (void)az_span_u32toa(temp_span, temperature, &temp_span);
+  temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR(", \"msgCount\": "));  
   (void)az_span_u32toa(temp_span, telemetry_send_count++, &temp_span);  
   temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR(" }"));
   temp_span = az_span_copy_u8(temp_span, '\0');
 
   return (char*)telemetry_payload;
 }
-
 static void sendTelemetry()
 {
   digitalWrite(LED_PIN, HIGH);

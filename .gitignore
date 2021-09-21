@@ -129,3 +129,8 @@ dmypy.json
 .pyre/
 .DS_Store
 microcontroller/azureMQTTclient/azure-sdk-for-c.zip
+Arduino/._.DS_Store
+.gitignore
+Arduino/libraries/._.DS_Store
+._.DS_Store
+._Arduino

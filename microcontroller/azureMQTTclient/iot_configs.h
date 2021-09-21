@@ -17,6 +17,10 @@
  * Then click on the named Device ID, and you will have able to copy the Primary or Secondary Device Connection String to this sample.
  */
 #define DEVICE_CONNECTION_STRING    "HostName=IoT-FFM.azure-devices.net;DeviceId=Microcontroller-Brisbane-QLD;SharedAccessKey=SZTFj1fNtsneM6njIf2YdRHyZbNaxmSNixEM80/CmB0="
+#define IOT_CONFIG_IOTHUB_FQDN      "IoT-FFM.azure-devices.net"
+#define IOT_CONFIG_DEVICE_ID        "Microcontroller-Brisbane-QLD" 
+#define IOT_CONFIG_DEVICE_KEY       "SZTFj1fNtsneM6njIf2YdRHyZbNaxmSNixEM80/CmB0="
+
 
 // The protocol you wish to use should be uncommented
 //
