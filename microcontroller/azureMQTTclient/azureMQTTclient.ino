@@ -93,6 +93,8 @@ const byte numChars = 32;
 char receivedChars[numChars];   // an array to store the received data
 char typeOfData = ' ';
 boolean newData = false;
+int temperature = 0;
+int humidity    = 0;
 
 static void connectToWiFi()
 {
@@ -326,13 +328,7 @@ void getDataFromSensor() {
         rc = Serial.read();
 
         if (rc != endMarker) {
-
-            if (ndx == 0) {
-              typeOfData = rc;
-            }
-            else {
-              receivedChars[ndx] = rc;
-            }
+            receivedChars[ndx] = rc;
             ndx++;
             if (ndx >= numChars) {
                 ndx = numChars - 1;
@@ -342,40 +338,59 @@ void getDataFromSensor() {
             receivedChars[ndx] = '\0'; // terminate the string
             ndx = 0;
             newData = true;
-            typeOfData = ' ';
         }
     }
 }
 
+char* substr(char* arr, int begin, int len)
+{
+    char* res = new char[len + 1];
+    for (int i = 0; i < len; i++)
+        res[i] = *(arr + begin + i);
+    res[len] = '\0';
+    return res;
+}
+
 static char* getTelemetryPayload()
 {
-  int temperature = 0;
-  int humidity    = 0;
   char *eptr;
 
   getDataFromSensor();
   if (newData == true) {
     Serial.print("Received data from sensor");
     Serial.println(receivedChars);
-    newData = false;
-  }  
+    newData = false; 
 
-  // Splitting the string into temperature and humidity values
-  if (typeOfData == 'C') { // Temperature in Celsius
-    temperature = strtol(receivedChars, &eptr, 10);
+    // Splitting the string into temperature and humidity values
+    if (receivedChars[0] == 'C') { // Temperature in Celsius
+      // Converting the second and tirdh chars in int
+      temperature = strtol(substr(receivedChars,1,2), &eptr, 10); 
+    }
+    if (receivedChars[0] == 'H') { // Humidity
+      humidity = strtol(substr(receivedChars,1,2), &eptr, 10);
+    }
+
+    if (temperature > 0 && humidity > 0 ) {
+
+      az_span temp_span = az_span_create(telemetry_payload, sizeof(telemetry_payload));
+      temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR("{ \"deviceId\": \"" IOT_CONFIG_DEVICE_ID "\", \"temperature\": "));
+
+      // testing all string received in serial port
+      //temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR("{ \"receivedChars\": "));
+      //temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_BUFFER( receivedChars ));
+      //temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR(" }"));
+      //temp_span = az_span_copy_u8(temp_span, '\0');  
+
+      (void)az_span_u32toa(temp_span, temperature, &temp_span);
+      temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR(", \"humidity\": "));
+      (void)az_span_u32toa(temp_span, humidity, &temp_span);
+      temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR(", \"msgCount\": "));  
+      (void)az_span_u32toa(temp_span, telemetry_send_count++, &temp_span);  
+      temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR(" }"));
+      temp_span = az_span_copy_u8(temp_span, '\0');
+    }
+    
   }
-  if (typeOfData == 'H') { // Humidity
-    humidity = strtol(receivedChars, &eptr, 10);
-  }
-
-  az_span temp_span = az_span_create(telemetry_payload, sizeof(telemetry_payload));
-  temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR("{ \"deviceId\": \"" IOT_CONFIG_DEVICE_ID "\", \"temperature\": "));
-  (void)az_span_u32toa(temp_span, temperature, &temp_span);
-  temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR(", \"msgCount\": "));  
-  (void)az_span_u32toa(temp_span, telemetry_send_count++, &temp_span);  
-  temp_span = az_span_copy(temp_span, AZ_SPAN_FROM_STR(" }"));
-  temp_span = az_span_copy_u8(temp_span, '\0');
-
   return (char*)telemetry_payload;
 }
 static void sendTelemetry()
