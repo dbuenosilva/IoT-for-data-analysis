@@ -19,8 +19,7 @@ Monitoring the telemetry messages sent to the Azure IoT Hub by device: az iot hu
         "module": "",
         "interface": "",
         "component": "",
-        "payload": "{ \"deviceId\": \"Microcontroller-Brisbane-QLD\", \"msgCount\": 494 }"
-    }
+        "payload": "{ \"deviceId\": \"Microcontroller-Brisbane-QLD\",    \"temperature\": 26, \"humidity\": 53, \"msgCount\": 0 "} "
 }
 
 Simulate a device in an Azure IoT Hub: az iot device simulate

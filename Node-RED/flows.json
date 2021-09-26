@@ -1,0 +1,762 @@
+[
+    {
+        "id": "6a7f44a42930fedb",
+        "type": "tab",
+        "label": "FFM IoT Solution Flow",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "6a913d9a.fa0844",
+        "type": "azureiothubregistry",
+        "z": "6a7f44a42930fedb",
+        "name": "Azure IoT Hub Registry",
+        "x": 370,
+        "y": 100,
+        "wires": [
+            [
+                "14a58301.e60a9d"
+            ]
+        ]
+    },
+    {
+        "id": "2fd0a3f.969ce5c",
+        "type": "inject",
+        "z": "6a7f44a42930fedb",
+        "name": "Register Device",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "{\"deviceId\":\"FFM-Vehicle-001\"}",
+        "payloadType": "json",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "6a913d9a.fa0844"
+            ]
+        ]
+    },
+    {
+        "id": "14a58301.e60a9d",
+        "type": "debug",
+        "z": "6a7f44a42930fedb",
+        "name": "Log",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 570,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "f775e252.a49f2",
+        "type": "debug",
+        "z": "6a7f44a42930fedb",
+        "name": "Log",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "95789379.e44d2",
+        "type": "azureiothub",
+        "z": "6a7f44a42930fedb",
+        "name": "Azure IoT Hub",
+        "protocol": "mqtt",
+        "x": 480,
+        "y": 240,
+        "wires": [
+            [
+                "f775e252.a49f2"
+            ]
+        ]
+    },
+    {
+        "id": "228b0f18.7799c",
+        "type": "inject",
+        "z": "6a7f44a42930fedb",
+        "d": true,
+        "name": "Send Payload",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "temperature",
+        "payload": "{\"deviceId\":\"Microcontroller-Melbourne-VIC\",\"key\":\"W+TUaMYpAdLcHi2+qk1P35CXsZdnyTROkZ1CleGavB4=\",\"protocol\":\"mqtt\",\"data\":\"{temperature: 26, humidity: 25}\"}",
+        "payloadType": "json",
+        "x": 140,
+        "y": 240,
+        "wires": [
+            [
+                "e995652c67fa153b"
+            ]
+        ]
+    },
+    {
+        "id": "817f33a3.ddf5f",
+        "type": "azureiothubreceiver",
+        "z": "6a7f44a42930fedb",
+        "name": "Azure IoT Hub Receiver",
+        "x": 500,
+        "y": 720,
+        "wires": [
+            [
+                "c2825fc8.d6323"
+            ]
+        ]
+    },
+    {
+        "id": "723d625e.52eb7c",
+        "type": "azureiothubdevicetwin",
+        "z": "6a7f44a42930fedb",
+        "name": "Azure IoT Hub Device Twin",
+        "x": 520,
+        "y": 820,
+        "wires": [
+            [
+                "5e9fec30.6a52f4"
+            ]
+        ]
+    },
+    {
+        "id": "c2825fc8.d6323",
+        "type": "debug",
+        "z": "6a7f44a42930fedb",
+        "name": "Log",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 790,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "5e9fec30.6a52f4",
+        "type": "debug",
+        "z": "6a7f44a42930fedb",
+        "name": "Log",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 790,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "3afc72bf.5c112e",
+        "type": "inject",
+        "z": "6a7f44a42930fedb",
+        "name": "Send DeviceId",
+        "props": [
+            {
+                "p": "payload",
+                "v": "device146",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "v": "",
+                "vt": "string"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "device146",
+        "payloadType": "str",
+        "x": 280,
+        "y": 820,
+        "wires": [
+            [
+                "723d625e.52eb7c"
+            ]
+        ]
+    },
+    {
+        "id": "e8a4b92542289fa7",
+        "type": "comment",
+        "z": "6a7f44a42930fedb",
+        "name": "Registering new vehicles",
+        "info": "Registering new trucks to the IoT Management Service Platform",
+        "x": 150,
+        "y": 60,
+        "wires": [],
+        "icon": "node-red/file-out.svg"
+    },
+    {
+        "id": "10f79c65c3777a77",
+        "type": "comment",
+        "z": "6a7f44a42930fedb",
+        "name": "Sending data from Melbourne Microcontroller",
+        "info": "Simulating sensor sending data from Melbourne Microcontroller.",
+        "x": 210,
+        "y": 200,
+        "wires": [],
+        "icon": "node-red/file-out.svg"
+    },
+    {
+        "id": "6d1c0fe417ecd3c2",
+        "type": "debug",
+        "z": "6a7f44a42930fedb",
+        "name": "Log",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 650,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "7b0530d1a9be47b1",
+        "type": "azureiothub",
+        "z": "6a7f44a42930fedb",
+        "name": "Azure IoT Hub",
+        "protocol": "mqtt",
+        "x": 480,
+        "y": 360,
+        "wires": [
+            [
+                "6d1c0fe417ecd3c2"
+            ]
+        ]
+    },
+    {
+        "id": "eb9edcf68f75c90d",
+        "type": "inject",
+        "z": "6a7f44a42930fedb",
+        "d": true,
+        "name": "Send Payload",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "temperature",
+        "payload": "{\"deviceId\":\"Microcontroller-Sydney-NSW\",\"key\":\"zRub0lBenfjBmLG8OUFYlaPgUyh2XgIIYXVzB/U9xRQ=\",\"protocol\":\"mqtt\",\"data\":\"{temperature: 26, humidity: 25}\"}",
+        "payloadType": "json",
+        "x": 140,
+        "y": 360,
+        "wires": [
+            [
+                "fd4acc3bac900fed"
+            ]
+        ]
+    },
+    {
+        "id": "4b417622bc17066d",
+        "type": "comment",
+        "z": "6a7f44a42930fedb",
+        "name": "Sending data from Sydney Microcontroller",
+        "info": "Simulating sensor sending data from Sydney Microcontroller.",
+        "x": 200,
+        "y": 320,
+        "wires": [],
+        "icon": "node-red/file-out.svg"
+    },
+    {
+        "id": "cb2da9da180ccfd0",
+        "type": "debug",
+        "z": "6a7f44a42930fedb",
+        "name": "Log",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 650,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "9b72c981d758c79c",
+        "type": "azureiothub",
+        "z": "6a7f44a42930fedb",
+        "name": "Azure IoT Hub",
+        "protocol": "mqtt",
+        "x": 480,
+        "y": 480,
+        "wires": [
+            [
+                "cb2da9da180ccfd0"
+            ]
+        ]
+    },
+    {
+        "id": "ef91f4abe25f4f79",
+        "type": "inject",
+        "z": "6a7f44a42930fedb",
+        "d": true,
+        "name": "Send Payload",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "temperature",
+        "payload": "{\"deviceId\":\"Microcontroller-Adelaide-SA\",\"key\":\"i8zG3X6DAzcLFp9A/8Hl8S6k19KGdsTlamn2KzorG6g=\",\"protocol\":\"mqtt\",\"data\":\"{temperature: 26, humidity: 25}\"}",
+        "payloadType": "json",
+        "x": 140,
+        "y": 480,
+        "wires": [
+            [
+                "716acd8f95e74a88"
+            ]
+        ]
+    },
+    {
+        "id": "9abadd5291282a79",
+        "type": "comment",
+        "z": "6a7f44a42930fedb",
+        "name": "Sending data from Adelaide Microcontroller",
+        "info": "Simulating sensor sending data from Adelaide Microcontroller.",
+        "x": 210,
+        "y": 440,
+        "wires": [],
+        "icon": "node-red/file-out.svg"
+    },
+    {
+        "id": "ad2b8ccd65ac89a6",
+        "type": "debug",
+        "z": "6a7f44a42930fedb",
+        "name": "Log",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 650,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "8ddb40a82a91c751",
+        "type": "azureiothub",
+        "z": "6a7f44a42930fedb",
+        "name": "Azure IoT Hub",
+        "protocol": "mqtt",
+        "x": 480,
+        "y": 600,
+        "wires": [
+            [
+                "ad2b8ccd65ac89a6"
+            ]
+        ]
+    },
+    {
+        "id": "7e789e462501dbf2",
+        "type": "inject",
+        "z": "6a7f44a42930fedb",
+        "d": true,
+        "name": "Send Payload",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "temperature",
+        "payload": "{\"deviceId\":\"Microcontroller-Hobart-TAS\",\"key\":\"G80ZmiIlcrGUwacJhNSjy1mSv3uXZ+qP3YRPyMnF/Sg=\",\"protocol\":\"mqtt\",\"data\":\"{temperature: 26, humidity: 25}\"}",
+        "payloadType": "json",
+        "x": 140,
+        "y": 600,
+        "wires": [
+            [
+                "dc345bd0a712c8be"
+            ]
+        ]
+    },
+    {
+        "id": "fe7a63eb5ad3387f",
+        "type": "comment",
+        "z": "6a7f44a42930fedb",
+        "name": "Sending data from Hobart Microcontroller",
+        "info": "Simulating sensor sending data from Hobart Microcontroller.",
+        "x": 200,
+        "y": 560,
+        "wires": [],
+        "icon": "node-red/file-out.svg"
+    },
+    {
+        "id": "e8f334f2ad620e36",
+        "type": "debug",
+        "z": "6a7f44a42930fedb",
+        "name": "Log",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1370,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "4a0bc5962ca127ac",
+        "type": "azureiothub",
+        "z": "6a7f44a42930fedb",
+        "name": "Azure IoT Hub",
+        "protocol": "mqtt",
+        "x": 1220,
+        "y": 240,
+        "wires": [
+            [
+                "e8f334f2ad620e36"
+            ]
+        ]
+    },
+    {
+        "id": "19a69e065b9adf03",
+        "type": "inject",
+        "z": "6a7f44a42930fedb",
+        "d": true,
+        "name": "Send Payload",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "temperature",
+        "payload": "{\"deviceId\":\"Microcontroller-Perth-WA\",\"key\":\"nNcjGuufcuf/1u5co4XKJ5ddlCDjhexFRe/5PYmRK0w=\",\"protocol\":\"mqtt\",\"data\":\"{temperature: 26, humidity: 25}\"}",
+        "payloadType": "json",
+        "x": 880,
+        "y": 240,
+        "wires": [
+            [
+                "e3a8dc2cfd946296"
+            ]
+        ]
+    },
+    {
+        "id": "a03f36037579cacb",
+        "type": "comment",
+        "z": "6a7f44a42930fedb",
+        "name": "Sending data from Perth Microcontroller",
+        "info": "Simulating sensor sending data from Perth Microcontroller.",
+        "x": 940,
+        "y": 200,
+        "wires": [],
+        "icon": "node-red/file-out.svg"
+    },
+    {
+        "id": "cf084334c1a55c28",
+        "type": "debug",
+        "z": "6a7f44a42930fedb",
+        "name": "Log",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1370,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "3195904401571ed7",
+        "type": "azureiothub",
+        "z": "6a7f44a42930fedb",
+        "name": "Azure IoT Hub",
+        "protocol": "mqtt",
+        "x": 1220,
+        "y": 360,
+        "wires": [
+            [
+                "cf084334c1a55c28"
+            ]
+        ]
+    },
+    {
+        "id": "8396415924415b37",
+        "type": "inject",
+        "z": "6a7f44a42930fedb",
+        "d": true,
+        "name": "Send Payload",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "temperature",
+        "payload": "{\"deviceId\":\"Microcontroller-Darwin-NT\",\"key\":\"sONYMusQlXWUlV3VwlyDYfkWWqlx7Ccqw+ubHfelXEE=\",\"protocol\":\"mqtt\",\"data\":\"{temperature: 26, humidity: 25}\"}",
+        "payloadType": "json",
+        "x": 880,
+        "y": 360,
+        "wires": [
+            [
+                "de7b544dea92b832"
+            ]
+        ]
+    },
+    {
+        "id": "a60589f08f3cc533",
+        "type": "comment",
+        "z": "6a7f44a42930fedb",
+        "name": "Sending data from Darwin Microcontroller",
+        "info": "Simulating sensor sending data from Darwin Microcontroller.",
+        "x": 940,
+        "y": 320,
+        "wires": [],
+        "icon": "node-red/file-out.svg"
+    },
+    {
+        "id": "1008fa595b8a1d52",
+        "type": "debug",
+        "z": "6a7f44a42930fedb",
+        "name": "Log",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1370,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "cbf93717d9e347c5",
+        "type": "azureiothub",
+        "z": "6a7f44a42930fedb",
+        "name": "Azure IoT Hub",
+        "protocol": "mqtt",
+        "x": 1220,
+        "y": 480,
+        "wires": [
+            [
+                "1008fa595b8a1d52"
+            ]
+        ]
+    },
+    {
+        "id": "5179c78044f53d56",
+        "type": "inject",
+        "z": "6a7f44a42930fedb",
+        "d": true,
+        "name": "Send Payload",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "temperature",
+        "payload": "{\"deviceId\":\"Microcontroller-Canberra-ACT\",\"key\":\"9LteLKIpuM1m0YGDOBeQdfObuTJnuXXkP59ubIdFddA=\",\"protocol\":\"mqtt\",\"data\":\"{temperature: 26, humidity: 25}\"}",
+        "payloadType": "json",
+        "x": 880,
+        "y": 480,
+        "wires": [
+            [
+                "6c4cea5ddcf5d8ca"
+            ]
+        ]
+    },
+    {
+        "id": "d8460d188fbcea9c",
+        "type": "comment",
+        "z": "6a7f44a42930fedb",
+        "name": "Sending data from Canberra Microcontroller",
+        "info": "Simulating sensor sending data from Canberra Microcontroller.",
+        "x": 950,
+        "y": 440,
+        "wires": [],
+        "icon": "node-red/file-out.svg"
+    },
+    {
+        "id": "e995652c67fa153b",
+        "type": "function",
+        "z": "6a7f44a42930fedb",
+        "name": "Sensor",
+        "func": "const MAX_TEMP = 25;\nconst MIN_TEMP = 5;\nconst MAX_HUM  = 55;\nconst MIN_HUM  = 30;\n\nvar count       = 0;\nvar temperature = (Math.floor(Math.random()*(MAX_TEMP-MIN_TEMP+1)+MIN_TEMP));\nvar humidity    = (Math.floor(Math.random()*(MAX_HUM-MIN_HUM+1)+MIN_HUM));\n\nmsg.payload.data = {\"deviceId\": \"Microcontroller-Melbourne-VIC\", \"temperature\": temperature, \"humidity\":  humidity ,\"msgCount\":  count }\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 240,
+        "wires": [
+            [
+                "95789379.e44d2"
+            ]
+        ]
+    },
+    {
+        "id": "fd4acc3bac900fed",
+        "type": "function",
+        "z": "6a7f44a42930fedb",
+        "name": "Sensor",
+        "func": "const MAX_TEMP = 35;\nconst MIN_TEMP = 15;\nconst MAX_HUM  = 55;\nconst MIN_HUM  = 23;\n\nvar count       = 0;\nvar temperature = (Math.floor(Math.random()*(MAX_TEMP-MIN_TEMP+1)+MIN_TEMP));\nvar humidity    = (Math.floor(Math.random()*(MAX_HUM-MIN_HUM+1)+MIN_HUM));\n\nmsg.payload.data = {\"deviceId\": \"Microcontroller-Sydney-NSW\", \"temperature\": temperature, \"humidity\":  humidity ,\"msgCount\":  count }\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 360,
+        "wires": [
+            [
+                "7b0530d1a9be47b1"
+            ]
+        ]
+    },
+    {
+        "id": "716acd8f95e74a88",
+        "type": "function",
+        "z": "6a7f44a42930fedb",
+        "name": "Sensor",
+        "func": "const MAX_TEMP = 25;\nconst MIN_TEMP = 5;\nconst MAX_HUM  = 55;\nconst MIN_HUM  = 13;\n\nvar count       = 0;\nvar temperature = (Math.floor(Math.random()*(MAX_TEMP-MIN_TEMP+1)+MIN_TEMP));\nvar humidity    = (Math.floor(Math.random()*(MAX_HUM-MIN_HUM+1)+MIN_HUM));\n\nmsg.payload.data = {\"deviceId\": \"Microcontroller-Adelaide-SA\", \"temperature\": temperature, \"humidity\":  humidity ,\"msgCount\":  count }\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 480,
+        "wires": [
+            [
+                "9b72c981d758c79c"
+            ]
+        ]
+    },
+    {
+        "id": "dc345bd0a712c8be",
+        "type": "function",
+        "z": "6a7f44a42930fedb",
+        "name": "Sensor",
+        "func": "const MAX_TEMP = 20;\nconst MIN_TEMP = -5;\nconst MAX_HUM  = 55;\nconst MIN_HUM  = 03;\n\nvar count       = 0;\nvar temperature = (Math.floor(Math.random()*(MAX_TEMP-MIN_TEMP+1)+MIN_TEMP));\nvar humidity    = (Math.floor(Math.random()*(MAX_HUM-MIN_HUM+1)+MIN_HUM));\n\nmsg.payload.data = {\"deviceId\": \"Microcontroller-Hobart-TAS\", \"temperature\": temperature, \"humidity\":  humidity ,\"msgCount\":  count }\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 600,
+        "wires": [
+            [
+                "8ddb40a82a91c751"
+            ]
+        ]
+    },
+    {
+        "id": "e3a8dc2cfd946296",
+        "type": "function",
+        "z": "6a7f44a42930fedb",
+        "name": "Sensor",
+        "func": "const MAX_TEMP = 25;\nconst MIN_TEMP = 0;\nconst MAX_HUM  = 65;\nconst MIN_HUM  = 13;\n\nvar count       = 0;\nvar temperature = (Math.floor(Math.random()*(MAX_TEMP-MIN_TEMP+1)+MIN_TEMP));\nvar humidity    = (Math.floor(Math.random()*(MAX_HUM-MIN_HUM+1)+MIN_HUM));\n\nmsg.payload.data = {\"deviceId\": \"Microcontroller-Perth-WA\", \"temperature\": temperature, \"humidity\":  humidity ,\"msgCount\":  count }\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 240,
+        "wires": [
+            [
+                "4a0bc5962ca127ac"
+            ]
+        ]
+    },
+    {
+        "id": "de7b544dea92b832",
+        "type": "function",
+        "z": "6a7f44a42930fedb",
+        "name": "Sensor",
+        "func": "const MAX_TEMP = 45;\nconst MIN_TEMP = 25;\nconst MAX_HUM  = 75;\nconst MIN_HUM  = 33;\n\nvar count       = 0;\nvar temperature = (Math.floor(Math.random()*(MAX_TEMP-MIN_TEMP+1)+MIN_TEMP));\nvar humidity    = (Math.floor(Math.random()*(MAX_HUM-MIN_HUM+1)+MIN_HUM));\n\nmsg.payload.data = {\"deviceId\": \"Microcontroller-Darwin-NT\", \"temperature\": temperature, \"humidity\":  humidity ,\"msgCount\":  count }\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 360,
+        "wires": [
+            [
+                "3195904401571ed7"
+            ]
+        ]
+    },
+    {
+        "id": "6c4cea5ddcf5d8ca",
+        "type": "function",
+        "z": "6a7f44a42930fedb",
+        "name": "Sensor",
+        "func": "const MAX_TEMP = 20;\nconst MIN_TEMP = -5;\nconst MAX_HUM  = 65;\nconst MIN_HUM  = 23;\n\nvar count       = 0;\nvar temperature = (Math.floor(Math.random()*(MAX_TEMP-MIN_TEMP+1)+MIN_TEMP));\nvar humidity    = (Math.floor(Math.random()*(MAX_HUM-MIN_HUM+1)+MIN_HUM));\n\nmsg.payload.data = {\"deviceId\": \"Microcontroller-Canberra-ACT\", \"temperature\": temperature, \"humidity\":  humidity ,\"msgCount\":  count }\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 480,
+        "wires": [
+            [
+                "cbf93717d9e347c5"
+            ]
+        ]
+    }
+]
