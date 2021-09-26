@@ -32,17 +32,37 @@
 // DHT11 works at rate of 1HZ, so define interval of 1,5 seconds
 #define TELEMETRY_FREQUENCY_MILLISECS 1500
 
+// Limit of temperature for Queensland to enable devices
+#define INCREASE_TEMPERATURE_LIMIT 1
+#define INCREASE_HUMIDIT_LIMIT     5
+
 // for DHT11, 
 //      VCC: 5V or 3V
 //      GND: GND
 //      DATA: 11 PIN
 int pinDHT11 = 11;
 
+// for turning ON/OFF devices according to temperature limit, 
+//      LOW: 0V device is ON
+//      HIGHT: 5V device is OFF 
+//      INSTRUCTION: 3 PIN
+int pinRelay = 3;
+
+// The initial temperature and humidity
+int initialTemperature = 0;
+int initialHumidity    = 0;
+
 // Creating an intance of SimpleDHT11 class
 SimpleDHT11 dht11(pinDHT11);
 
 void setup() {
   Serial.begin(115200);
+
+  // Define Relay out PIN
+  pinMode(pinRelay, OUTPUT);
+
+  // Initialise with devices off
+  digitalWrite(pinRelay, LOW);
 }
 
 void loop() {
@@ -73,6 +93,23 @@ void loop() {
     */
     Serial.print("C"); Serial.print((int)temperature); Serial.print('\n');
     Serial.print("H"); Serial.print((int)humidity); Serial.print('\n');
+
+    if (initialTemperature == 0 ) {
+      initialTemperature = (int)temperature;
+    }
+
+    if (initialHumidity == 0 ) {
+      initialHumidity = (int)humidity;
+    }
+
+    // If temperature or humidity increase over the limit, turn on devices
+    if ( ( initialTemperature > 0 && (int)temperature >= ( initialTemperature + INCREASE_TEMPERATURE_LIMIT ))
+        || ( initialHumidity > 0 && (int)humidity >= ( initialHumidity + INCREASE_HUMIDIT_LIMIT )) ) {
+        digitalWrite(pinRelay, HIGH);
+    }
+    else { // turn OFF device
+        digitalWrite(pinRelay, LOW);
+    }
   }
   
   // DHT11 works at rate of 1HZ. 
